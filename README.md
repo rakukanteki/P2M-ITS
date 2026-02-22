@@ -82,30 +82,3 @@ python main.py
 ```bash
 python ablation.py
 ```
-
-## Configuration
-
-Edit `src/config/config.py` to customize:
-- Data paths and splits
-- Model architecture and hyperparameters
-- Training settings
-- Federated learning parameters
-
-## Output
-
-Results are saved to `OUTPUT_DIR` with:
-- `best_model.pth` - Best centralized model
-- `best_federated_model.pth` - Best federated model
-- `sensor_scaler.pkl` - Fitted scaler
-- `training_history.png` - Training curves
-- `confusion_matrix.png` - Confusion matrix
-- `roc_curves.png` - ROC curves
-- `federated_history.png` - FL convergence
-- `client_accuracy.png` - Client performance
-- `final_results.json` - Results summary
-
-### XAI Outputs (in `xai/` subfolder)
-- `shap_summary.png` - Top sensor features from SHAP
-- `shap_dependence.png` - Feature dependence plots
-- `gradcam_sample_*.png` - GradCAM visualizations for test samples
-- `xai_report.json` - XAI explanations summary
