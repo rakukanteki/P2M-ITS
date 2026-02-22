@@ -28,6 +28,10 @@ Modular implementation of multimodal federated learning with support for multipl
 │   │   │   └── scaffold.py        # SCAFFOLD strategy
 │   │   ├── client.py              # FL client
 │   │   └── server.py              # FL server
+│   ├── xai/
+│   │   ├── shap_explainer.py      # SHAP-based sensor explanations
+│   │   ├── gradcam.py             # GradCAM video explanations
+│   │   └── manager.py             # XAI orchestration
 │   └── utils/
 │       ├── logger.py              # Logging utilities
 │       └── metrics.py             # Visualization utilities
@@ -53,6 +57,11 @@ Modular implementation of multimodal federated learning with support for multipl
 - FedAdam
 - FedNova
 - SCAFFOLD
+
+## Explainable AI (XAI)
+
+- **SHAP** - Explains sensor feature importance with kernel SHAP
+- **GradCAM** - Highlights important video regions via gradient-based activation maps
 
 ## Quick Start
 
@@ -94,3 +103,9 @@ Results are saved to `OUTPUT_DIR` with:
 - `federated_history.png` - FL convergence
 - `client_accuracy.png` - Client performance
 - `final_results.json` - Results summary
+
+### XAI Outputs (in `xai/` subfolder)
+- `shap_summary.png` - Top sensor features from SHAP
+- `shap_dependence.png` - Feature dependence plots
+- `gradcam_sample_*.png` - GradCAM visualizations for test samples
+- `xai_report.json` - XAI explanations summary

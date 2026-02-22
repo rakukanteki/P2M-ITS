@@ -21,6 +21,7 @@ from training.evaluator import ModelEvaluator
 from federated.server import FLServer
 from utils.logger import Logger
 from utils.metrics import Visualizer
+from xai.manager import XAIManager
 
 
 def main():
@@ -190,7 +191,25 @@ def main():
         os.path.join(config.data.OUTPUT_DIR, 'confusion_matrix.png')
     )
     
-    Logger.section("STEP 15-16: SCAFFOLD FEDERATED LEARNING")
+    Logger.section("STEP 15: EXPLAINABLE AI (XAI) - SHAP & GradCAM")
+    xai_manager = XAIManager(model, device, config.data.OUTPUT_DIR, class_names)
+    
+    Logger.progress("Generating SHAP explanations for sensor features...")
+    shap_features = xai_manager.generate_shap_explanations(
+        train_loader, test_loader, num_background=50, num_test=10
+    )
+    Logger.progress(f"Top sensor features: {list(shap_features.keys())[:5]}")
+    
+    Logger.progress("Generating GradCAM explanations for video frames...")
+    gradcam_results = xai_manager.generate_gradcam_explanations(
+        test_loader, num_samples=5
+    )
+    Logger.progress(f"GradCAM samples generated: {gradcam_results.get('samples_generated', 0)}")
+    
+    xai_manager.save_xai_report()
+    Logger.progress("XAI report saved to outputs/xai/xai_report.json")
+    
+    Logger.section("STEP 16-17: SCAFFOLD FEDERATED LEARNING")
     samples_by_client = {}
     folders_per_client = np.array_split(train_folders, config.federated.NUM_CLIENTS)
     
@@ -219,7 +238,7 @@ def main():
         os.path.join(config.data.OUTPUT_DIR, 'federated_history.png')
     )
     
-    Logger.section("STEP 17: CLIENT-LEVEL PERFORMANCE VARIANCE")
+    Logger.section("STEP 18: CLIENT-LEVEL PERFORMANCE VARIANCE")
     fed_model.load_state_dict(torch.load(
         os.path.join(config.data.OUTPUT_DIR, 'best_federated_model.pth')
     ))
@@ -255,7 +274,7 @@ def main():
         os.path.join(config.data.OUTPUT_DIR, 'client_accuracy.png')
     )
     
-    Logger.section("STEP 18: SAVE FINAL RESULTS")
+    Logger.section("STEP 19: SAVE FINAL RESULTS")
     final_results = {
         'data_leakage': leakage_report,
         'centralized': {
